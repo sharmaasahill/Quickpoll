@@ -36,7 +36,7 @@ export default function Home() {
   const [isMounted, setIsMounted] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
   
-  const { lastMessage, isConnected } = useWebSocket('ws://localhost:8000/ws');
+  const { lastMessage, isConnected } = useWebSocket('wss://quickpoll-api-p7ac.onrender.com/ws');
 
   // Toast functions
   const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
@@ -57,7 +57,7 @@ export default function Home() {
   const fetchPolls = async () => {
     try {
       setError(null);
-      const response = await fetch('http://localhost:8000/api/polls');
+      const response = await fetch('https://quickpoll-api-p7ac.onrender.com/api/polls');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -67,7 +67,7 @@ export default function Home() {
       setPolls(data);
       setIsLoading(false);
     } catch {
-      setError('Failed to connect to backend. Make sure the backend server is running on http://localhost:8000');
+      setError('Failed to connect to backend. Please try again later.');
       setIsLoading(false);
     }
   };
@@ -97,7 +97,7 @@ export default function Home() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/api/polls', {
+      const response = await fetch('https://quickpoll-api-p7ac.onrender.com/api/polls', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -318,6 +318,6 @@ export default function Home() {
           onClose={() => removeToast(toast.id)}
         />
       ))}
-    </main>
+      </main>
   );
 }

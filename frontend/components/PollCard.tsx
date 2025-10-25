@@ -33,7 +33,7 @@ export function PollCard({ poll, onDelete, showToast }: PollCardProps) {
     if (hasVoted) return;
     
     try {
-      const response = await fetch(`http://localhost:8000/api/polls/${poll.id}/vote`, {
+      const response = await fetch(`https://quickpoll-api-p7ac.onrender.com/api/polls/${poll.id}/vote`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ option_id: optionId }),
@@ -53,7 +53,7 @@ export function PollCard({ poll, onDelete, showToast }: PollCardProps) {
     if (hasLiked) return;
     
     try {
-      const response = await fetch(`http://localhost:8000/api/polls/${poll.id}/like`, {
+      const response = await fetch(`https://quickpoll-api-p7ac.onrender.com/api/polls/${poll.id}/like`, {
         method: 'POST',
       });
       
@@ -77,7 +77,7 @@ export function PollCard({ poll, onDelete, showToast }: PollCardProps) {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/api/polls/${poll.id}`, {
+      const response = await fetch(`https://quickpoll-api-p7ac.onrender.com/api/polls/${poll.id}`, {
         method: 'DELETE',
       });
       
