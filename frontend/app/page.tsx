@@ -3,7 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useWebSocket } from '@/lib/useWebSocket';
 import { PollCard } from '@/components/PollCard';
+import { Toast } from '@/components/Toast';
 import { Plus, AlertCircle } from 'lucide-react';
+
+interface ToastMessage {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'warning';
+}
 
 interface PollOption {
   id: number;
@@ -27,8 +34,19 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
   
   const { lastMessage, isConnected } = useWebSocket('ws://localhost:8000/ws');
+
+  // Toast functions
+  const showToast = (message: string, type: 'success' | 'error' | 'warning') => {
+    const id = Date.now();
+    setToasts((prev) => [...prev, { id, message, type }]);
+  };
+
+  const removeToast = (id: number) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
 
   // Handle client-side mounting
   useEffect(() => {
@@ -74,7 +92,7 @@ export default function Home() {
     const validOptions = options.filter(opt => opt.trim() !== '');
     
     if (question.trim() === '' || validOptions.length < 2) {
-      alert('Please enter a question and at least 2 options');
+      showToast('Please enter a question and at least 2 options', 'warning');
       return;
     }
 
@@ -95,9 +113,10 @@ export default function Home() {
       setQuestion('');
       setOptions(['', '']);
       setShowCreateForm(false);
+      showToast('Poll created successfully!', 'success');
       fetchPolls();
     } catch {
-      alert('Failed to create poll. Please try again.');
+      showToast('Failed to create poll. Please try again.', 'error');
     }
   };
 
@@ -279,11 +298,26 @@ export default function Home() {
         ) : (
           <div className="space-y-4">
             {polls.map((poll) => (
-              <PollCard key={poll.id} poll={poll} />
+              <PollCard 
+                key={poll.id} 
+                poll={poll}
+                onDelete={fetchPolls}
+                showToast={showToast}
+              />
             ))}
           </div>
         )}
-        </div>
-      </main>
+      </div>
+
+      {/* Toast Notifications */}
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
+    </main>
   );
 }

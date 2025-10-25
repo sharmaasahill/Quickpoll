@@ -176,6 +176,28 @@ async def like_poll(poll_id: int, db: Session = Depends(get_db)):
     
     return {"success": True, "likes": poll.likes}
 
+@app.delete("/api/polls/{poll_id}")
+async def delete_poll(poll_id: int, db: Session = Depends(get_db)):
+    """Delete a poll and its options"""
+    poll = db.query(Poll).filter(Poll.id == poll_id).first()
+    if not poll:
+        raise HTTPException(status_code=404, detail="Poll not found")
+    
+    # Delete all options first
+    db.query(PollOption).filter(PollOption.poll_id == poll_id).delete()
+    
+    # Delete the poll
+    db.delete(poll)
+    db.commit()
+    
+    # Broadcast deletion to all connected clients
+    await manager.broadcast({
+        "type": "poll_deleted",
+        "poll_id": poll_id
+    })
+    
+    return {"success": True, "message": "Poll deleted successfully"}
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint for real-time updates"""
