@@ -12,13 +12,13 @@ app = FastAPI()
 # Initialize database
 init_db()
 
-# CORS configuration - Must be configured properly for frontend to connect
+# CORS configuration - Allow all origins for deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
-    allow_credentials=False,  # Set to False when using wildcard origins
-    allow_methods=["*"],  # Allow all methods
-    allow_headers=["*"],  # Allow all headers
+    allow_origins=["*"],  # Allow all origins
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Database dependency
