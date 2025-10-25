@@ -2,6 +2,11 @@
 
 A modern polling application with real-time updates built using FastAPI and Next.js. Create polls, vote, and see results update instantly across all users via WebSocket.
 
+## Live Demo
+
+**Frontend:** https://quickpoll-three.vercel.app/  
+**Backend API:** https://quickpoll-api-p7ac.onrender.com
+
 ## Features
 
 - **Real-Time Updates** - Live vote/like counts via WebSocket
